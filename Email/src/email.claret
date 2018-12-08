@@ -1,0 +1,45 @@
+systemName "Email"
+
+usecase "Creation message" {
+	version "1.0" type "Creation" user "Manager" date "12/06/2018"
+	actor emailUser "Email User"
+	
+	preCondition "There is active network connection"
+	
+	basic{
+		step 1 emailUser "Click compose button" af[1]
+		step 2 system "presents a form with recipient, subject and text field and send and discart button"
+		step 3 emailUser "fills out the fields and click on the send button" af[2,3,4]
+		step 4 system "display a succesfull message" ef[1,2]
+	}
+	
+	alternative 1 "Recovery message from draft"{
+		step 1 emailUser "Click on draft button"
+		step 2 system "present a list of auto saved messages"
+		step 3 emailUser "Click on the message" bs 3
+	}
+	 
+	alternative 2 "Discart the message" {
+		step 1 emailUser "Click on the discart button" bs 3
+	}
+	
+	alternative 3 "Save the message"{
+		step 1 emailUser "fills out the fields and save the message" bs 3
+	}
+	
+	alternative 4 "empty content fields" {
+		step 1 emailUser "fill out email field and click on the send button"
+		step 2 system "alerts empty content message" 
+	}
+	
+	
+	exception 1 "Recipient does not exist"{
+		step 1 system "alerts that user does not exist" bs 3	
+	}
+	
+	exception 2 "Recipient field is empty"{
+		step 1 system "alerts that recipient field is empty, system asks to specify at least one recipient" bs 3
+	}
+	
+	postCondition "successfully message"
+}
